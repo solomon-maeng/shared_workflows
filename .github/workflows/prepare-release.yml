@@ -17,10 +17,6 @@ on:
         description: 'Develop branch name'
         type: string
         default: develop
-      projectName:
-        description: 'Project name'
-        type: string
-        default: ''
 
 permissions: write-all
 
@@ -57,11 +53,15 @@ jobs:
         run: git checkout -b release/${{ inputs.version || steps.get-new-version.outputs.new_version }}
 
       - name: Update zeus version
-        if: ${{ inputs.projectName == 'zeus' }}
-        run: sed -i "4s/VERSION = ${{ steps.previoustag.outputs.tag }}/VERSION = ${{ inputs.version || steps.get-new-version.outputs.new_version }}/g" lib/zeus/version.rb
-
-      - name: Git add, commit zeus version.rb
-        run: git commit -am "Update zeus version"
+        run: |
+          dirname=${PWD##*/}
+          if [$dirname = 'zeus'] then
+            sed -i "4s/VERSION = ${{ steps.previoustag.outputs.tag }}/VERSION = ${{ inputs.version || steps.get-new-version.outputs.new_version }}/g" lib/zeus/version.rb
+            git commit -am "Update zeus version"
+          exit 0
+          else
+          exit 0
+          fi
 
       - name: Push Release Branch
         run: git push origin release/${{ inputs.version || steps.get-new-version.outputs.new_version }}
