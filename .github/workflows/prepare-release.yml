@@ -58,9 +58,9 @@ jobs:
           if [$dirname = 'zeus'] then
             sed -i "4s/VERSION = ${{ steps.previoustag.outputs.tag }}/VERSION = ${{ inputs.version || steps.get-new-version.outputs.new_version }}/g" lib/zeus/version.rb
             git commit -am "Update zeus version"
-          exit 0
+            exit 0
           else
-          exit 0
+            exit 0
           fi
 
       - name: Push Release Branch
